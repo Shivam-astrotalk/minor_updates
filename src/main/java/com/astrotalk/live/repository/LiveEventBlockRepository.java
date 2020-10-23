@@ -1,0 +1,15 @@
+package com.astrotalk.live.repository;
+
+import com.astrotalk.live.model.LiveEventBlock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface LiveEventBlockRepository extends CrudRepository<LiveEventBlock,Long> {
+
+    @Query(value = "Select * from live_event_block where live_event_id = ?1", nativeQuery = true)
+    public List<LiveEventBlock> getBlocksByEventId(long eventId);
+}
