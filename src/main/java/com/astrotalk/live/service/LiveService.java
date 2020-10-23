@@ -131,6 +131,7 @@ public class LiveService {
             return liveEvent;
         YoutubeUtils.goLive(authCode,liveEvent);
         liveEvent.setStatus(Status.ONGOING);
+        liveEventRepository.save(liveEvent);
         return liveEvent;
     }
 }
