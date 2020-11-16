@@ -2,28 +2,20 @@ package com.astrotalk.live.youtube;
 
 import com.astrotalk.live.model.LiveEvent;
 import com.google.api.client.auth.oauth2.BearerToken;
-import com.google.api.client.auth.oauth2.ClientParametersAuthentication;
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleOAuthConstants;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import okhttp3.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.net.URLDecoder;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
@@ -37,7 +29,7 @@ public class YoutubeUtils {
 
     private static final String APPLICATION_NAME = "youtubeLive";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    static String token = "ya29.A0AfH6SMAxxuAjl4329rULaqQw91rHXLjlREJ4aCuRNhkNhmiTqQfKRw_FRpqlBG7tliyNYFJYx_tf8dPWNjoXlixwk7VxCcEnQ65op2elSOEUR0uW6UweYjamPDpNpGtsqSKfOg2G1OCcAnOGzk8FDGmTs-OFWvfhGAHt1QDb43_X";
+    static String token = "ya29.a0AfH6SMAHspgnr3z0B_MpfyOMPJHA-VBKbr_xTNUiQ5JfmmkgQqjBz4p7JZjxl-B1g1IPGtqaFRoVSrBMU_aGBu7pedjBFoBLX_Sg45fGy7JKpRj4nzb8NbnAzTlTDy727mgogBxi5Z3XvypFv52iyJMeMBukf0ykZrg";
     /**
      * Create an authorized Credential object.
      *
@@ -46,9 +38,10 @@ public class YoutubeUtils {
      */
     public static Credential authorize(final NetHttpTransport httpTransport, String authCode) throws IOException, GeneralSecurityException {
 
-        GoogleAuthorizationCodeTokenRequest request = new GoogleAuthorizationCodeTokenRequest(httpTransport,JSON_FACTORY,CLIENT_ID,CLIENT_SECRET,authCode,"https://www.astrotalk.com");
-        GoogleTokenResponse response = request.execute();
-        Credential credential = new Credential(BearerToken.authorizationHeaderAccessMethod()).setAccessToken(response.getAccessToken());
+//        GoogleAuthorizationCodeTokenRequest request = new GoogleAuthorizationCodeTokenRequest(httpTransport,JSON_FACTORY,CLIENT_ID,CLIENT_SECRET,authCode,"https://www.astrotalk.com");
+//        GoogleTokenResponse response = request.execute();
+        String token = "ya29.A0AfH6SMC1vmn3BMxUuWimu9hIYPiLmZ9EiYZ22wh3W94K2QF9QVYqKdwVOAUnqgTc491e_Zcf0e0k2NhUKQp8EOh9jkRfjw5g3yDFFNVqBN0BF9q5PS_wsVROm0CxHcmQcQTqfmHaf74Am5Y2J79llC9qu7_t0JflRYN3v0gAi68";
+        Credential credential = new Credential(BearerToken.authorizationHeaderAccessMethod()).setAccessToken(token);
         return credential;
     }
 
@@ -87,7 +80,7 @@ public class YoutubeUtils {
         LiveBroadcastSnippet snippet = new LiveBroadcastSnippet();
         snippet.setScheduledEndTime(new DateTime(System.currentTimeMillis() + 24*3600*1000));
         snippet.setScheduledStartTime(new DateTime(System.currentTimeMillis() + 48*3600*1000));
-        snippet.setTitle(liveEvent.getAstrologerName() + " live");
+//        snippet.setTitle(liveEvent.getAstrologerName() + " live");
        // snippet.setChannelId("UCtzwI9wcMhw4RJH2VRTnhkQ"); //
         liveBroadcast.setSnippet(snippet);
 
@@ -124,4 +117,8 @@ public class YoutubeUtils {
         liveEvent.setConsumptionUrl("https://www.youtube.com/watch?v=" + liveBroadcast.getId());
     }
 
+    @Scheduled(fixedDelay = 1000)
+    public void test() throws IOException, GeneralSecurityException {
+        goLive(null,null);
+    }
 }

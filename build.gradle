@@ -20,7 +20,9 @@ dependencies {
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
 
-    compileOnly 'org.projectlombok:lombok:1.18.10'
+    compile 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor "org.projectlombok:lombok:1.18.10"
+
     compile ('com.google.api-client:google-api-client:1.23.0'){
        exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
