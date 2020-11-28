@@ -24,6 +24,8 @@ public class LiveEvent {
     Date estimatedEndTime;
     Date actualEndTime;
 
+    int entryFee;
+
     @Column(name = "ingestion_url",columnDefinition = "TEXT")
     String ingestionUrl;
 

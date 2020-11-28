@@ -24,7 +24,7 @@ public class LiveController {
     LiveService liveService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ROLE_CONSULTANT')")
+    @PreAuthorize("hasRole('ROLE_CONSULTANT') or hasRole('ROLE_ADMIN')")
     public ResponseEntity fillIntakeForm(@RequestBody LiveEvent liveEvent, HttpServletRequest request) {
         liveService.create(liveEvent);
         return new ResponseEntity(HttpStatus.OK);
@@ -34,6 +34,13 @@ public class LiveController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CONSULTANT')")
     public ResponseEntity approve(@RequestParam long eventId, @RequestParam Status status, HttpServletRequest request) {
         liveService.updateStatus(eventId, status);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/update/link")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CONSULTANT')")
+    public ResponseEntity approve(@RequestParam long eventId, @RequestParam String link,@RequestParam boolean goLive, HttpServletRequest request) {
+        liveService.updateLink(eventId, link,goLive);
         return new ResponseEntity(HttpStatus.OK);
     }
 

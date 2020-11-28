@@ -9,16 +9,17 @@ import javax.persistence.Table;
 
 @Entity
 @Data
-@Table(name = "live_event_product")
-public class LiveEventProduct {
+@Table(name = "live_event_purchase")
+public class LiveEventPurchase {
 
     @Id
     @GeneratedValue
     Long id;
 
-    String productName;
-    String productPic;
-    boolean isActive;
-    int price;
-
+    long userId;
+    long eventId;
+    long productId;
+    int amount;
+    String description;
+    long creationTime;
 }
