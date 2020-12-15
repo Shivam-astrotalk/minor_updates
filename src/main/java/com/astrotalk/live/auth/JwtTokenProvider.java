@@ -5,11 +5,17 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -52,8 +58,16 @@ public class JwtTokenProvider {
 		}
 		return null;
 	}
+	public String getUserEmail(String token) {
+		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+	}
 
-
+	public Authentication getAuthentication(String token) {
+		Role role_type = Role.valueOf(getRoleType(token));
+		String email = getUserEmail(token);
+		UserDetails userDetails = new User(email,email,true,true,true,true, new ArrayList<Role>(Arrays.asList(role_type)));
+		return new UsernamePasswordAuthenticationToken(userDetails, getId(token), userDetails.getAuthorities());
+	}
 
 	public boolean validateToken(String token, HttpServletRequest req) throws Exception {
 		try {
