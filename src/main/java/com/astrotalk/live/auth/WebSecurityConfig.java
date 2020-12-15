@@ -206,7 +206,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Disallow everything else..
                 .anyRequest().authenticated();
 
-        //http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
+        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 
     }
 
