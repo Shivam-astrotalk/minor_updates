@@ -36,5 +36,6 @@ public class LiveEvent {
     Status status;
 
     String title;
+    String description;
 
 }
