@@ -203,6 +203,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/banner/**").permitAll()
                 .antMatchers("/consultant-gallery/get/for/user").permitAll()
+                .antMatchers("/live/**").permitAll()
                 // Disallow everything else..
                 .anyRequest().authenticated();
 

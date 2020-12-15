@@ -70,16 +70,17 @@ public class JwtTokenProvider {
 			if(isLive!=null && isLive && liveServer.equalsIgnoreCase("live"))
 				throw new Exception("Token Server Mismatch - " + isLive);
 
-			Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-			long id = (long)claims.get("id");
-			req.setAttribute("_user_id_",id);
-			return true;
+			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+			req.setAttribute("X_ROLE_",getRoleType(token));return true;
 		} catch (JwtException | IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new Exception("Expired or invalid JWT token");
 		}
 	}
 
+	public String getRoleType(String token) {
+		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("role_type").toString();
+	}
 	public boolean resolveId(String token, HttpServletRequest req) {
 		String id = req.getHeader("id");
 		String tokenId = getId(token) + "";
