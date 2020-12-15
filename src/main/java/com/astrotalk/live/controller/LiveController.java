@@ -137,14 +137,6 @@ public class LiveController {
         return new ResponseEntity(subscribers,HttpStatus.OK);
     }
 
-    @GetMapping("/redirect/go/live")
-    public ResponseEntity goLive(@RequestParam String authCode, @RequestParam String state) throws IOException, GeneralSecurityException {
-        String [] tokens = URLDecoder.decode(state).split(",");
-        long eventId = Long.parseLong(tokens[0]);
-        LiveEvent liveEvent = liveService.goLive(eventId,authCode);
-        return new ResponseEntity(liveEvent,HttpStatus.OK);
-    }
-
     @GetMapping("/list")
     public ResponseEntity getList(@RequestParam Status status, @RequestParam long fromId, @RequestParam int pageSize,
                                   @RequestParam(required = false, defaultValue = "-1") long consultantId){
