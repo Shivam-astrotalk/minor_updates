@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //				.permitAll().antMatchers("/login/consultant").permitAll().antMatchers("/login/signup/consultant/google")
 //				.permitAll().antMatchers("/login/admin").permitAll().antMatchers("/login/admin/google").permitAll()
 
-                .antMatchers("/live/event/create").permitAll()
+                .antMatchers("/live/**").permitAll()
                 // Disallow everything else..
                 .anyRequest().authenticated();
 
