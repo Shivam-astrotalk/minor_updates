@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.List;
 
@@ -16,10 +17,10 @@ import java.util.List;
 public class JwtTokenProvider {
 
 
-	@Value("JWT_SECRET")
+	@Value("${JWT_SECRET}")
 	private String jwtSecret;
 
-	@Value("LIVE_SERVER")
+	@Value("${LIVE_SERVER}")
 	String liveServer;
 
 	private long oneDay = 24 * 60 * 60 * 1000;
@@ -74,6 +75,7 @@ public class JwtTokenProvider {
 			req.setAttribute("_user_id_",id);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
+			e.printStackTrace();
 			throw new Exception("Expired or invalid JWT token");
 		}
 	}
