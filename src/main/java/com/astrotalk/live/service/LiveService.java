@@ -100,7 +100,7 @@ public class LiveService {
             LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
             checkAndDeductMoney(userId, liveEvent.getEntryFee(), "Joining event : " + liveEvent.getTitle());
             LiveEventSubscriber liveEventSubscriber = new LiveEventSubscriber();
-            liveEventSubscriber.setJoinTime(new Date(Timings.currentTimeIndia()));
+            liveEventSubscriber.setJoinTime(System.currentTimeMillis());
             liveEventSubscriber.setLiveEventId(eventId);
             liveEventSubscriber.setUserId(userId);
             liveEventSubscriber.setUserName(userName);
@@ -132,8 +132,8 @@ public class LiveService {
     public void leaveEvent(long userId, long eventId){
         List<LiveEventSubscriber> subscribers = liveEventSubscriberRepository.getSubscribers(eventId,userId);
         for(LiveEventSubscriber subscriber : subscribers){
-            if(subscriber.getLeaveTime() == null) {
-                subscriber.setLeaveTime(new Date(Timings.currentTimeIndia()));
+            if(subscriber.getLeaveTime() != 0) {
+                subscriber.setLeaveTime(System.currentTimeMillis());
                 liveEventSubscriberRepository.save(subscriber);
             }
         }
@@ -141,7 +141,7 @@ public class LiveService {
 
     public List<LiveEventSubscriber> getCurrentSubscribers(long eventId) {
         List<LiveEventSubscriber> subscribers = liveEventSubscriberRepository.getSubscribers(eventId);
-        subscribers = subscribers.stream().filter(l -> l.getLeaveTime() != null).collect(Collectors.toList());
+        subscribers = subscribers.stream().filter(l -> l.getLeaveTime() != 0).collect(Collectors.toList());
         return subscribers;
     }
 
@@ -167,7 +167,7 @@ public class LiveService {
             return null;
         String token = tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Publisher);
         liveEvent.setStatus(Status.ONGOING);
-        liveEvent.setActualStartTime(new Date(Timings.currentTimeIndia()));
+        liveEvent.setActualStartTime(System.currentTimeMillis());
         liveEventRepository.save(liveEvent);
         return token;
     }
@@ -175,7 +175,7 @@ public class LiveService {
     public void endEvent(long eventId){
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         liveEvent.setStatus(Status.FINISHED);
-        liveEvent.setActualEndTime(new Date(Timings.currentTimeIndia()));
+        liveEvent.setActualEndTime(Timings.currentTimeIndia());
         liveEventRepository.save(liveEvent);
     }
 

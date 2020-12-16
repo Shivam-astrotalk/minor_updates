@@ -18,11 +18,11 @@ public class LiveEvent {
     String astrologerName;
     String astrologerPic;
 
-    Date estimatedStartTime;
-    Date actualStartTime;
+    long estimatedStartTime;
+    long actualStartTime;
 
-    Date estimatedEndTime;
-    Date actualEndTime;
+    long estimatedEndTime;
+    long actualEndTime;
 
     int entryFee;
 

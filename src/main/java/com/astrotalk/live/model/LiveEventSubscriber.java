@@ -20,7 +20,7 @@ public class LiveEventSubscriber {
     long liveEventId;
     long userId;
     String userName;
-    Date joinTime;
-    Date leaveTime;
+    long joinTime;
+    long leaveTime;
 
 }
