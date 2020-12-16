@@ -19,4 +19,7 @@ public interface LiveEventRepository extends CrudRepository<LiveEvent,Long> {
     @Query(value = "Select * from live_event where astrologer_id = ?1", nativeQuery = true)
     List<LiveEvent> getAllByAstrologer(long astrologerId);
 
+    @Query(value = "Select * from live_event where (status = 'ONGOING' OR status = 'APPROVED')", nativeQuery = true)
+    List<LiveEvent> getAllForUser();
+
 }

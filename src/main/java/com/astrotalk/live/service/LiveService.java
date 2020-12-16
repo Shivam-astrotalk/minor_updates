@@ -72,6 +72,9 @@ public class LiveService {
         return liveEventRepository.getAllByAstrologer(astrologerId);
     }
 
+    public List<LiveEvent> getAllForUser(){
+        return liveEventRepository.getAllForUser();
+    }
     private boolean isBlocked(long userId, long eventId){
         List<LiveEventBlock> blockList = liveEventBlockRepository.getBlocksByEventId(eventId);
         for(LiveEventBlock block : blockList){
