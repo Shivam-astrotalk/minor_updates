@@ -146,6 +146,11 @@ public class LiveController {
         return new ResponseEntity(liveEvents,HttpStatus.OK);
     }
 
+    @GetMapping("/astrologer/list")
+    public ResponseEntity getList(@RequestParam long consultantId){
+        List<LiveEvent> liveEvents = liveService.getAllByAstrologer(consultantId);
+        return new ResponseEntity(liveEvents,HttpStatus.OK);
+    }
     @GetMapping("/id")
     public ResponseEntity getById(@RequestParam  long eventId){
         LiveEvent liveEvent = liveService.getById(eventId);
