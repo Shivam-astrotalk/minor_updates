@@ -1,7 +1,9 @@
 package com.astrotalk.live.controller;
 
+import com.astrotalk.live.JSONUtils;
 import com.astrotalk.live.model.*;
 import com.astrotalk.live.service.LiveService;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,34 +27,34 @@ public class LiveController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_CONSULTANT') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity fillIntakeForm(@RequestBody LiveEvent liveEvent, HttpServletRequest request) {
+    public ResponseEntity fillIntakeForm(@RequestBody LiveEvent liveEvent, HttpServletRequest request) throws JSONException {
         liveService.create(liveEvent);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
     }
 
     @PostMapping("/update/status")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CONSULTANT')")
-    public ResponseEntity approve(@RequestParam long eventId, @RequestParam Status status, HttpServletRequest request) {
+    public ResponseEntity approve(@RequestParam long eventId, @RequestParam Status status, HttpServletRequest request) throws JSONException {
         liveService.updateStatus(eventId, status);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
     }
 
     @PostMapping("/update/link")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CONSULTANT')")
-    public ResponseEntity approve(@RequestParam long eventId, @RequestParam String link,@RequestParam boolean goLive, HttpServletRequest request) {
+    public ResponseEntity approve(@RequestParam long eventId, @RequestParam String link,@RequestParam boolean goLive, HttpServletRequest request) throws JSONException {
         liveService.updateLink(eventId, link,goLive);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
     }
 
     @PostMapping("/user/subscribe")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> subscribe(@RequestParam long eventId, @RequestParam String username,
-                                            @RequestParam long userId, HttpServletRequest request) {
+                                            @RequestParam long userId, HttpServletRequest request) throws JSONException {
         if (userId != Long.parseLong(request.getHeader("id")))
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(JSONUtils.getFailJson(),HttpStatus.UNAUTHORIZED);
         try {
             liveService.joinEvent(userId, eventId, username);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
         } catch (LiveException e) {
             e.printStackTrace();
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -61,12 +63,12 @@ public class LiveController {
 
     @GetMapping("/activity/user")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity activity(@RequestParam long eventId, @RequestParam long fromId, @RequestParam long userId, HttpServletRequest request) {
+    public ResponseEntity activity(@RequestParam long eventId, @RequestParam long fromId, @RequestParam long userId, HttpServletRequest request) throws JSONException {
         if (userId != Long.parseLong(request.getHeader("id")))
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(JSONUtils.getFailJson(),HttpStatus.UNAUTHORIZED);
         try {
             List<LiveEventActivity> activityList = liveService.getActivity(fromId, eventId, userId);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
         } catch (LiveException e) {
             e.printStackTrace();
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -78,8 +80,8 @@ public class LiveController {
     public ResponseEntity activity(@RequestParam long eventId, @RequestParam long fromId, HttpServletRequest request) {
         try {
             List<LiveEventActivity> activityList = liveService.getActivity(fromId, eventId, -1);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (LiveException e) {
+            return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
+        } catch (LiveException | JSONException e) {
             e.printStackTrace();
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
@@ -91,8 +93,8 @@ public class LiveController {
                                         @RequestParam String message, HttpServletRequest request) {
         try {
             liveService.addMessageActivity(userId, eventId, userName, message);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (LiveException e) {
+            return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
+        } catch (LiveException | JSONException e) {
             e.printStackTrace();
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
@@ -104,8 +106,8 @@ public class LiveController {
                                         @RequestParam String message, HttpServletRequest request) {
         try {
             liveService.addMessageActivity(-1, eventId, userName, message);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (LiveException e) {
+            return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
+        } catch (LiveException | JSONException e) {
             e.printStackTrace();
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
@@ -114,19 +116,19 @@ public class LiveController {
     @PostMapping("/block")
     @PreAuthorize("hasRole('ROLE_CONSULTANT')")
     public ResponseEntity createMessage(@RequestParam long eventId, @RequestParam long userId,
-                                        HttpServletRequest request) {
+                                        HttpServletRequest request) throws JSONException {
         liveService.blockUser(userId, eventId);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
     }
 
     @PostMapping("/leave")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity leave(@RequestParam long eventId, @RequestParam long userId,
-                                        HttpServletRequest request) {
+                                        HttpServletRequest request) throws JSONException {
         if (userId != Long.parseLong(request.getHeader("id")))
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         liveService.leaveEvent(userId, eventId);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
     }
 
     @GetMapping("/current/subscribers")
