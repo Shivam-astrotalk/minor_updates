@@ -63,7 +63,7 @@ public class LiveService {
     }
 
     public List<LiveEvent> getAllByStatus(Status status, long fromId, long astrologerId, int pageSize){
-        if(astrologerId != -1)
+        if(astrologerId == -1)
             return liveEventRepository.getAllByStatus(status.name(),fromId,pageSize);
         else
             return liveEventRepository.getAllByStatusOfAstrologer(status.name(),fromId,pageSize,astrologerId);
