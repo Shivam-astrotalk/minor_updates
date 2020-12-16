@@ -5,6 +5,7 @@ import com.astrotalk.live.agora.RtcTokenBuilder;
 import com.astrotalk.live.model.*;
 import com.astrotalk.live.repository.*;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class LiveService {
 
     @Autowired
@@ -51,6 +53,8 @@ public class LiveService {
     public void updateStatus(long liveEventId, Status status){
         LiveEvent liveEvent = liveEventRepository.findById(liveEventId).get();
         liveEvent.setStatus(status);
+        log.info("Status : {}", status);
+        log.info("Updating status {}", liveEvent);
         liveEventRepository.save(liveEvent);
     }
 
