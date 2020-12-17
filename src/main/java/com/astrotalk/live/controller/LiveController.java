@@ -32,6 +32,12 @@ public class LiveController {
         return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
     }
 
+    @PostMapping("/update")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity update(@RequestBody LiveEvent liveEvent, HttpServletRequest request) throws JSONException {
+        liveService.update(liveEvent);
+        return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
+    }
     @PostMapping("/update/status")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CONSULTANT')")
     public ResponseEntity approve(@RequestParam long eventId, @RequestParam Status status, HttpServletRequest request) throws JSONException {

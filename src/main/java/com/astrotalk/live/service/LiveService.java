@@ -46,6 +46,11 @@ public class LiveService {
         liveEventRepository.save(liveEvent);
     }
 
+    public void update(LiveEvent liveEvent){
+        liveEventRepository.save(liveEvent);
+    }
+
+
     public LiveEvent getById(long eventId){
         return liveEventRepository.findById(eventId).get();
     }
