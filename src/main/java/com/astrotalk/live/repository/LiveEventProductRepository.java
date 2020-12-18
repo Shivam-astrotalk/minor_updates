@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface LiveEventProductRepository extends CrudRepository<LiveEventProduct,Long> {
 
-    @Query(value = "Select * from live_event_product where is_active = true", nativeQuery = true)
+    @Query(value = "Select * from live_event_product where active = true", nativeQuery = true)
     List<LiveEventProduct> getAllActiveProducts();
 
 }
