@@ -159,8 +159,8 @@ public class LiveController {
     }
 
     @GetMapping("/user/list")
-    public ResponseEntity getList(){
-        List<LiveEvent> liveEvents = liveService.getAllForUser();
+    public ResponseEntity getEventForUser(@RequestParam long userId){
+        List<LiveEvent> liveEvents = liveService.getAllForUser(userId);
         return new ResponseEntity(liveEvents,HttpStatus.OK);
     }
 

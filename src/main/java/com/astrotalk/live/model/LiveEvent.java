@@ -38,4 +38,8 @@ public class LiveEvent {
     String title;
     String description;
 
+
+    @Transient
+    boolean currentUserBooked;
+
 }

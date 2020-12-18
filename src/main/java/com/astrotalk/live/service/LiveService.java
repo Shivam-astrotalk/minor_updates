@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,8 +82,19 @@ public class LiveService {
         return liveEventRepository.getAllByAstrologer(astrologerId);
     }
 
-    public List<LiveEvent> getAllForUser(){
-        return liveEventRepository.getAllForUser();
+    public List<LiveEvent> getAllForUser(long userId){
+        List<LiveEvent> liveEvents = liveEventRepository.getAllForUser();
+        List<LiveEventSubscriber> liveEventSubscribers = liveEventSubscriberRepository.getUserSubscriptions(userId);
+        HashMap<Long,LiveEvent> liveEventHashMap = new HashMap<>();
+        for(LiveEvent liveEvent : liveEvents){
+            liveEventHashMap.put(liveEvent.getId(),liveEvent);
+        }
+        for(LiveEventSubscriber liveEventSubscriber : liveEventSubscribers){
+            LiveEvent liveEvent = liveEventHashMap.get(liveEventSubscriber.getLiveEventId());
+            if(liveEvent != null)
+                liveEvent.setCurrentUserBooked(true);
+        }
+        return liveEvents;
     }
     private boolean isBlocked(long userId, long eventId){
         List<LiveEventBlock> blockList = liveEventBlockRepository.getBlocksByEventId(eventId);
@@ -96,6 +108,7 @@ public class LiveService {
         if (isBlocked(userId, eventId))
             throw new LiveException("User is blocked for this event");
 
+        LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         List<LiveEventSubscriber> liveEventSubscribers = liveEventSubscriberRepository.getSubscribers(eventId);
         boolean alreadySubscribered = false;
         for (LiveEventSubscriber subscriber : liveEventSubscribers) {
@@ -103,10 +116,7 @@ public class LiveService {
                 alreadySubscribered = true;
             }
         }
-        if (alreadySubscribered) {
-            return tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Subscriber, userId);
-        } else {
-            LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
+        if (!alreadySubscribered ) {
             checkAndDeductMoney(userId, liveEvent.getEntryFee(), "Joining event : " + liveEvent.getTitle());
             LiveEventSubscriber liveEventSubscriber = new LiveEventSubscriber();
             liveEventSubscriber.setJoinTime(System.currentTimeMillis());
@@ -114,7 +124,8 @@ public class LiveService {
             liveEventSubscriber.setUserId(userId);
             liveEventSubscriber.setUserName(userName);
             liveEventSubscriberRepository.save(liveEventSubscriber);
-
+        }
+        if(liveEvent.getStatus().equals(Status.ONGOING)){
             LiveEventActivity liveEventActivity = new LiveEventActivity();
             liveEventActivity.setEventId(eventId);
             liveEventActivity.setActivity(userName + " joined");
@@ -128,6 +139,7 @@ public class LiveService {
             purchaseRepository.save(purchase);
             return tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Subscriber,userId);
         }
+        return null;
     }
 
     public void blockUser(long userId, long eventId){

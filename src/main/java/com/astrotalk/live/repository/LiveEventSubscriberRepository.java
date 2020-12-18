@@ -13,4 +13,7 @@ public interface LiveEventSubscriberRepository extends CrudRepository<LiveEventS
 
     @Query(value = "Select * from live_event_subscriber where live_event_id = ?1 and user_id = ?2", nativeQuery = true)
     List<LiveEventSubscriber> getSubscribers(long eventId, long userId);
+
+    @Query(value = "Select * from live_event_subscriber where user_id = ?2", nativeQuery = true)
+    List<LiveEventSubscriber> getUserSubscriptions(long userId);
 }
