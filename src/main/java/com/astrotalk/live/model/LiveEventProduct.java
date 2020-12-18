@@ -21,7 +21,7 @@ public class LiveEventProduct {
     String productPic;
 
     @JsonProperty
-    boolean isActive;
+    boolean active;
     int price;
 
 }
