@@ -1,5 +1,6 @@
 package com.astrotalk.live.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -18,6 +19,8 @@ public class LiveEventProduct {
 
     String productName;
     String productPic;
+
+    @JsonProperty
     boolean isActive;
     int price;
 
