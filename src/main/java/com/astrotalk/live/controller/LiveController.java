@@ -170,4 +170,10 @@ public class LiveController {
         return new ResponseEntity(liveEvent,HttpStatus.OK);
     }
 
+    @GetMapping("/products")
+    public ResponseEntity getById(){
+        List<LiveEventProduct> products = liveService.getAllProducts();
+        return new ResponseEntity(products,HttpStatus.OK);
+    }
+
 }
