@@ -176,4 +176,11 @@ public class LiveController {
         return new ResponseEntity(products,HttpStatus.OK);
     }
 
+
+    @PostMapping("/products/save")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity addProduct(@RequestBody LiveEventProduct product) throws JSONException {
+        liveService.saveOrUpdate(product);
+        return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
+    }
 }
