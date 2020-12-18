@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RtcTokenBuilder {
-    static final String appId = "";
-    static final String appCertificate = "";
-    static final String account =  "";
+    static final String appId = "799b1cb0daaf4fa0b7f7bbb96e809d80";
+    static final String appCertificate = "3c70820835eb47bc99b48edb7860d62e";
+   // static final String account =  "";
 	public enum Role {
 
 	    Role_Publisher(1),
@@ -22,10 +22,10 @@ public class RtcTokenBuilder {
 
     
 
-    public String buildTokenWithUserAccount(String channelName, Role role) {
+    public String buildTokenWithUserAccount(String channelName, Role role,long userId) {
     	int privilegeTs = (int)(System.currentTimeMillis()/1000) + 600;
     	// Assign appropriate access privileges to each role.
-    	AccessToken builder = new AccessToken(appId, appCertificate, channelName, account);
+    	AccessToken builder = new AccessToken(appId, appCertificate, channelName, String.valueOf(userId));
     	builder.addPrivilege(AccessToken.Privileges.kJoinChannel, privilegeTs);
     	if (role == Role.Role_Publisher || role == Role.Role_Subscriber || role == Role.Role_Admin) {
     		builder.addPrivilege(AccessToken.Privileges.kPublishAudioStream, privilegeTs);

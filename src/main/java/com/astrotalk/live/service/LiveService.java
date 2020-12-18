@@ -104,7 +104,7 @@ public class LiveService {
             }
         }
         if (alreadySubscribered) {
-            return tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Subscriber);
+            return tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Subscriber, userId);
         } else {
             LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
             checkAndDeductMoney(userId, liveEvent.getEntryFee(), "Joining event : " + liveEvent.getTitle());
@@ -126,7 +126,7 @@ public class LiveService {
             purchase.setCreationTime(Timings.currentTimeIndia());
             purchase.setEventId(eventId);
             purchaseRepository.save(purchase);
-            return tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Subscriber);
+            return tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Subscriber,userId);
         }
     }
 
@@ -174,7 +174,7 @@ public class LiveService {
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         if(!liveEvent.getStatus().equals(Status.APPROVED))
             return null;
-        String token = tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Publisher);
+        String token = tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Publisher,liveEvent.getAstrologerId());
         liveEvent.setStatus(Status.ONGOING);
         liveEvent.setActualStartTime(System.currentTimeMillis());
         liveEventRepository.save(liveEvent);
