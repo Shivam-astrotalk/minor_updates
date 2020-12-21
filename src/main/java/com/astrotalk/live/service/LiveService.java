@@ -202,7 +202,7 @@ public class LiveService {
 
 
     public void checkAndDeductMoney(long userId, double money, String message) throws LiveException {
-        throw new LiveException("Not enough money, please recharge");
+        //throw new LiveException("Not enough money, please recharge");
     }
 
 
