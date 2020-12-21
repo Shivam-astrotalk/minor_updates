@@ -163,6 +163,7 @@ public class LiveService {
     public List<LiveEventSubscriber> getCurrentSubscribers(long eventId) {
         List<LiveEventSubscriber> subscribers = liveEventSubscriberRepository.getSubscribers(eventId);
         subscribers = subscribers.stream().filter(l -> l.getLeaveTime() == 0).collect(Collectors.toList());
+        //TODO : add amount;
         return subscribers;
     }
 

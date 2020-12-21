@@ -2,10 +2,7 @@ package com.astrotalk.live.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -23,4 +20,6 @@ public class LiveEventSubscriber {
     long joinTime;
     long leaveTime;
 
+    @Transient
+    double amount;
 }
