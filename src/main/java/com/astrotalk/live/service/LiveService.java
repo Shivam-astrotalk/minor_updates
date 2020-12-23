@@ -162,8 +162,24 @@ public class LiveService {
 
     public List<LiveEventSubscriber> getCurrentSubscribers(long eventId) {
         List<LiveEventSubscriber> subscribers = liveEventSubscriberRepository.getSubscribers(eventId);
-        subscribers = subscribers.stream().filter(l -> l.getLeaveTime() == 0).collect(Collectors.toList());
+        //subscribers = subscribers.stream().filter(l -> l.getLeaveTime() == 0).collect(Collectors.toList());
         //TODO : add amount;
+        List<LiveEventPurchase> purchases = purchaseRepository.getAllPurchases(eventId);
+        purchases = purchases.stream().filter(p -> p.getProductId() != -1).collect(Collectors.toList());
+        HashMap<Long,Integer> purchaseMap = new HashMap<>();
+        for(LiveEventPurchase purchase : purchases){
+            Integer amount = purchaseMap.get(purchase.getUserId());
+            if(amount == null)
+                amount = purchase.getAmount();
+            else
+                amount += purchase.getAmount();
+            purchaseMap.put(purchase.getUserId(),amount);
+        }
+        for(LiveEventSubscriber liveEventSubscriber : subscribers){
+            Integer amount = purchaseMap.get(liveEventSubscriber.getUserId());
+            if(amount != null)
+                liveEventSubscriber.setAmount(amount);
+        }
         return subscribers;
     }
 
