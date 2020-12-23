@@ -2,6 +2,7 @@ package com.astrotalk.live;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("all")
+@Slf4j
 public class JSONUtils {
     public static GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
     public static Gson gson = gsonBuilder.create();
@@ -666,6 +668,7 @@ public class JSONUtils {
             obj.put(key, JSONObject.NULL);
         else
             obj.put(key, value);
+        log.info("Success json " + obj.toString());
         return obj.toString();
     }
 

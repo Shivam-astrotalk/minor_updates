@@ -3,6 +3,7 @@ package com.astrotalk.live.controller;
 import com.astrotalk.live.JSONUtils;
 import com.astrotalk.live.model.*;
 import com.astrotalk.live.service.LiveService;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/live/event")
-
+@Slf4j
 public class LiveController {
 
     @Autowired
@@ -60,6 +61,7 @@ public class LiveController {
             return new ResponseEntity(JSONUtils.getFailJson(),HttpStatus.UNAUTHORIZED);
         try {
             String token = liveService.joinEvent(userId, eventId, username);
+            log.info("Sending token : " + token);
             return new ResponseEntity(JSONUtils.getSuccessJson("token",token),HttpStatus.OK);
         } catch (LiveException e) {
             e.printStackTrace();
