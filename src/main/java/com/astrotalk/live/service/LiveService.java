@@ -201,7 +201,7 @@ public class LiveService {
 
     public String goLive(long eventId) throws IOException, GeneralSecurityException {
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
-        if(!liveEvent.getStatus().equals(Status.APPROVED) || !liveEvent.getStatus().equals(Status.ONGOING))
+        if(!liveEvent.getStatus().equals(Status.APPROVED) && !liveEvent.getStatus().equals(Status.ONGOING))
             return null;
         String token = tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Publisher,liveEvent.getAstrologerId());
         liveEvent.setStatus(Status.ONGOING);
