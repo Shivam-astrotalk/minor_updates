@@ -60,7 +60,7 @@ public class LiveController {
             return new ResponseEntity(JSONUtils.getFailJson(),HttpStatus.UNAUTHORIZED);
         try {
             String token = liveService.joinEvent(userId, eventId, username);
-            return new ResponseEntity(JSONUtils.getSuccessJson(token),HttpStatus.OK);
+            return new ResponseEntity(JSONUtils.getSuccessJson("token",token),HttpStatus.OK);
         } catch (LiveException e) {
             e.printStackTrace();
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -132,7 +132,7 @@ public class LiveController {
     public ResponseEntity goLive(@RequestParam long eventId,
                                         HttpServletRequest request) throws JSONException, IOException, GeneralSecurityException {
         String token = liveService.goLive(eventId);
-        return new ResponseEntity(JSONUtils.getSuccessJson(token),HttpStatus.OK);
+        return new ResponseEntity(JSONUtils.getSuccessJson("token",token),HttpStatus.OK);
     }
 
     @PostMapping("/leave")
