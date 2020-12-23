@@ -59,8 +59,8 @@ public class LiveController {
         if (userId != Long.parseLong(request.getHeader("id")))
             return new ResponseEntity(JSONUtils.getFailJson(),HttpStatus.UNAUTHORIZED);
         try {
-            liveService.joinEvent(userId, eventId, username);
-            return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
+            String token = liveService.joinEvent(userId, eventId, username);
+            return new ResponseEntity(JSONUtils.getSuccessJson(token),HttpStatus.OK);
         } catch (LiveException e) {
             e.printStackTrace();
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -125,6 +125,14 @@ public class LiveController {
                                         HttpServletRequest request) throws JSONException {
         liveService.blockUser(userId, eventId);
         return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
+    }
+
+    @PostMapping("/go/live")
+    @PreAuthorize("hasRole('ROLE_CONSULTANT')")
+    public ResponseEntity goLive(@RequestParam long eventId,
+                                        HttpServletRequest request) throws JSONException, IOException, GeneralSecurityException {
+        String token = liveService.goLive(eventId);
+        return new ResponseEntity(JSONUtils.getSuccessJson(token),HttpStatus.OK);
     }
 
     @PostMapping("/leave")
