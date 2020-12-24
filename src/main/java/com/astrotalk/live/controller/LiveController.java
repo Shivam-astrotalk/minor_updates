@@ -88,7 +88,7 @@ public class LiveController {
     public ResponseEntity activity(@RequestParam long eventId, @RequestParam long fromId, HttpServletRequest request) {
         try {
             List<LiveEventActivity> activityList = liveService.getActivity(fromId, eventId, -1);
-            return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
+            return new ResponseEntity(JSONUtils.getSuccessJson(activityList),HttpStatus.OK);
         } catch (LiveException | JSONException e) {
             e.printStackTrace();
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
