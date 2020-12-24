@@ -137,7 +137,7 @@ public class LiveService {
             purchase.setCreationTime(Timings.currentTimeIndia());
             purchase.setEventId(eventId);
             purchaseRepository.save(purchase);
-            return tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Subscriber,userId);
+            return tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Subscriber,0);
         }
         return null;
     }
@@ -203,7 +203,7 @@ public class LiveService {
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         if(!liveEvent.getStatus().equals(Status.APPROVED) && !liveEvent.getStatus().equals(Status.ONGOING))
             return null;
-        String token = tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Publisher,liveEvent.getAstrologerId());
+        String token = tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Publisher,0);
         liveEvent.setStatus(Status.ONGOING);
         liveEvent.setActualStartTime(System.currentTimeMillis());
         liveEventRepository.save(liveEvent);

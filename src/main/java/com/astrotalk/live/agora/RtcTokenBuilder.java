@@ -1,5 +1,6 @@
 package com.astrotalk.live.agora;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
