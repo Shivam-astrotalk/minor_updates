@@ -55,12 +55,12 @@ public class LiveController {
 
     @PostMapping("/user/subscribe")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<String> subscribe(@RequestParam long eventId, @RequestParam String username,
+    public ResponseEntity<String> subscribe(@RequestParam long eventId, @RequestParam String username, @RequestParam String userPic,
                                             @RequestParam long userId, HttpServletRequest request) throws JSONException {
         if (userId != Long.parseLong(request.getHeader("id")))
             return new ResponseEntity(JSONUtils.getFailJson(),HttpStatus.UNAUTHORIZED);
         try {
-            String token = liveService.joinEvent(userId, eventId, username);
+            String token = liveService.joinEvent(userId, eventId, username, userPic);
             log.info("Sending token : " + token);
             return new ResponseEntity(JSONUtils.getSuccessJson("token",token),HttpStatus.OK);
         } catch (LiveException e) {
@@ -98,9 +98,9 @@ public class LiveController {
     @PostMapping("/activity/message/user")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity createMessage(@RequestParam long eventId, @RequestParam long userId, @RequestParam String userName,
-                                        @RequestParam String message, HttpServletRequest request) {
+                                        @RequestParam String message, @RequestParam String userPic, HttpServletRequest request) {
         try {
-            liveService.addMessageActivity(userId, eventId, userName, message);
+            liveService.addMessageActivity(userId, eventId, userName,userPic, message);
             return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
         } catch (LiveException | JSONException e) {
             e.printStackTrace();
@@ -111,9 +111,9 @@ public class LiveController {
     @PostMapping("/activity/message/consultant")
     @PreAuthorize("hasRole('ROLE_CONSULTANT')")
     public ResponseEntity createMessage(@RequestParam long eventId, @RequestParam String userName,
-                                        @RequestParam String message, HttpServletRequest request) {
+                                        @RequestParam String message, @RequestParam String userPic, HttpServletRequest request) {
         try {
-            liveService.addMessageActivity(-1, eventId, userName, message);
+            liveService.addMessageActivity(-1, eventId, userName, userPic, message);
             return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
         } catch (LiveException | JSONException e) {
             e.printStackTrace();

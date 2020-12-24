@@ -19,4 +19,8 @@ public class LiveEventActivity {
     @Column(columnDefinition = "TEXT")
     String activity;
 
+    String userName;
+
+    String userPic;
+
 }

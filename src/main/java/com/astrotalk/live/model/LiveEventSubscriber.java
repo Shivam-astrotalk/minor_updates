@@ -17,6 +17,7 @@ public class LiveEventSubscriber {
     long liveEventId;
     long userId;
     String userName;
+    String userPic;
     long joinTime;
     long leaveTime;
 

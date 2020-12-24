@@ -102,7 +102,7 @@ public class LiveService {
         }
         return false;
     }
-    public String joinEvent(long userId, long eventId, String userName) throws LiveException {
+    public String joinEvent(long userId, long eventId, String userName, String userPic) throws LiveException {
         if (isBlocked(userId, eventId))
             throw new LiveException("User is blocked for this event");
 
@@ -121,12 +121,15 @@ public class LiveService {
             liveEventSubscriber.setLiveEventId(eventId);
             liveEventSubscriber.setUserId(userId);
             liveEventSubscriber.setUserName(userName);
+            liveEventSubscriber.setUserPic(userPic);
             liveEventSubscriberRepository.save(liveEventSubscriber);
         }
         if(liveEvent.getStatus().equals(Status.ONGOING)){
             LiveEventActivity liveEventActivity = new LiveEventActivity();
             liveEventActivity.setEventId(eventId);
-            liveEventActivity.setActivity(userName + " joined");
+            liveEventActivity.setActivity("joined");
+            liveEventActivity.setUserName(userName);
+            liveEventActivity.setUserPic(userPic);
             liveEventActivityRepository.save(liveEventActivity);
             LiveEventPurchase purchase = new LiveEventPurchase();
             purchase.setAmount(liveEvent.getEntryFee());
@@ -188,11 +191,13 @@ public class LiveService {
             throw new LiveException("User is blocked");
     }
 
-    public void addMessageActivity(long userId, long eventId, String username, String message) throws LiveException {
+    public void addMessageActivity(long userId, long eventId, String username, String userPic,String message) throws LiveException {
         if(isBlocked(userId,eventId))
             throw new LiveException("User is blocked");
         LiveEventActivity liveEventActivity = new LiveEventActivity();
-        liveEventActivity.setActivity(username + ": " + message);
+        liveEventActivity.setActivity(message);
+        liveEventActivity.setUserPic(userPic);
+        liveEventActivity.setUserName(username);
         liveEventActivity.setEventId(eventId);
         liveEventActivityRepository.save(liveEventActivity);
     }
