@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -242,5 +240,24 @@ public class LiveService {
         purchase.setCreationTime(Timings.currentTimeIndia());
         purchase.setEventId(eventId);
         purchaseRepository.save(purchase);
+    }
+
+    public List<LiveEvent> getUserHistory(long userId){
+        List<LiveEventSubscriber> liveEventSubscriber = liveEventSubscriberRepository.getUserSubscriptions(userId);
+        List<Long> eventIds = liveEventSubscriber.stream().map(s -> s.getLiveEventId()).collect(Collectors.toList());
+        List<LiveEvent> liveEvents = new ArrayList<>();
+        for(LiveEvent liveEvent : liveEventRepository.findAllById(eventIds)){
+            liveEvents.add(liveEvent);
+        }
+        Collections.sort(liveEvents, new Comparator<LiveEvent>() {
+            @Override
+            public int compare(LiveEvent o1, LiveEvent o2) {
+                if(o2.getEstimatedStartTime() > o1.getEstimatedStartTime())
+                    return -1;
+                else
+                    return 1;
+            }
+        });
+        return liveEvents;
     }
 }

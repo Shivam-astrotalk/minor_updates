@@ -137,6 +137,14 @@ public class LiveController {
         return new ResponseEntity(JSONUtils.getSuccessJson("token",token),HttpStatus.OK);
     }
 
+    @PostMapping("/end")
+    @PreAuthorize("hasRole('ROLE_CONSULTANT')")
+    public ResponseEntity end(@RequestParam long eventId,
+                                 HttpServletRequest request) throws JSONException, IOException, GeneralSecurityException {
+        liveService.endEvent(eventId);
+        return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
+    }
+
     @PostMapping("/leave")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity leave(@RequestParam long eventId, @RequestParam long userId,
@@ -171,6 +179,12 @@ public class LiveController {
     @GetMapping("/user/list")
     public ResponseEntity getEventForUser(@RequestParam long userId){
         List<LiveEvent> liveEvents = liveService.getAllForUser(userId);
+        return new ResponseEntity(liveEvents,HttpStatus.OK);
+    }
+
+    @GetMapping("/user/history")
+    public ResponseEntity getHistory(@RequestParam long userId){
+        List<LiveEvent> liveEvents = liveService.getUserHistory(userId);
         return new ResponseEntity(liveEvents,HttpStatus.OK);
     }
 
