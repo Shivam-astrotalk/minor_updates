@@ -210,11 +210,13 @@ public class LiveController {
 
     @PostMapping("/product/buy")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity buyProduct(@RequestParam long userId, @RequestParam long eventId,@RequestParam long productId,
+    public ResponseEntity buyProduct(@RequestParam long userId, @RequestParam long eventId,
+                                     @RequestParam long productId, @RequestParam String userName,
+                                     @RequestParam String userPic,
                                      HttpServletRequest request) throws JSONException, LiveException {
         if (userId != Long.parseLong(request.getHeader("id")))
             return new ResponseEntity(JSONUtils.getFailJson(),HttpStatus.UNAUTHORIZED);
-        liveService.buyProduct(userId,eventId,productId);
+        liveService.buyProduct(userId,eventId,productId,userName,userPic);
         return new ResponseEntity(JSONUtils.getSuccessJson(),HttpStatus.OK);
     }
 }

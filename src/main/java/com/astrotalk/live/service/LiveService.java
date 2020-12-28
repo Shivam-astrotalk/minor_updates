@@ -218,6 +218,7 @@ public class LiveService {
         liveEvent.setStatus(Status.FINISHED);
         liveEvent.setActualEndTime(Timings.currentTimeIndia());
         liveEventRepository.save(liveEvent);
+        // TODO : calculate astrologer & astrotalk cut.
     }
 
 
@@ -234,7 +235,7 @@ public class LiveService {
        return productRepository.getAllActiveProducts();
     }
 
-    public void buyProduct(long userId, long eventId, long productId) throws LiveException {
+    public void buyProduct(long userId, long eventId, long productId, String userName, String userPic) throws LiveException {
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         LiveEventProduct liveEventProduct = productRepository.findById(productId).get();
         checkAndDeductMoney(userId,liveEventProduct.getPrice(),"Purchased " + liveEventProduct.getProductName() + " in eventId " + eventId);
@@ -244,6 +245,12 @@ public class LiveService {
         purchase.setProductId(productId);
         purchase.setCreationTime(Timings.currentTimeIndia());
         purchase.setEventId(eventId);
+        LiveEventActivity activity = new LiveEventActivity();
+        activity.setActivity("donated " + liveEventProduct.getProductName());
+        activity.setUserPic(userPic);
+        activity.setUserName(userName);
+        activity.setEventId(eventId);
+        liveEventActivityRepository.save(activity);
         purchaseRepository.save(purchase);
     }
 
