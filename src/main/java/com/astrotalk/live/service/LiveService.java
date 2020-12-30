@@ -243,6 +243,7 @@ public class LiveService {
             Response<JSONObject> response = call.execute();
             log.info("Response : {}", response);
             JSONObject jsonObject = response.body();
+            log.info("Json : {}",jsonObject);
             if(!jsonObject.get("status").equals("success"))
                 throw new LiveException(jsonObject.getString("reason"));
         }catch (Exception exception){
