@@ -116,8 +116,8 @@ public class LiveService {
         return false;
     }
 
-    @Transactional(rollbackFor = LiveException.class)
-    public String joinEvent(long userId, long eventId, String userName, String userPic) throws LiveException {
+    @Transactional
+    public String joinEvent(long userId, long eventId, String userName, String userPic) {
         if (isBlocked(userId, eventId))
             throw new LiveException("User is blocked for this event");
 
@@ -264,8 +264,8 @@ public class LiveService {
        return productRepository.getAllActiveProducts();
     }
 
-    @Transactional(rollbackFor = LiveException.class)
-    public void buyProduct(long userId, long eventId, long productId, String userName, String userPic) throws LiveException {
+    @Transactional
+    public void buyProduct(long userId, long eventId, long productId, String userName, String userPic){
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         LiveEventProduct liveEventProduct = productRepository.findById(productId).get();
 
