@@ -238,15 +238,14 @@ public class LiveService {
 
     public void checkAndDeductMoney(long userId, double money, String message, long eventId, long purchaseId) throws LiveException {
         //throw new LiveException("Not enough money, please recharge");
-        Call<String> call = walletServiceClient.deductUserWallet(-1.0*money, URLEncoder.encode(message),purchaseId,walletSecretKey,"6",userId);
+        Call<com.astrotalk.live.model.pojo.Response> call = walletServiceClient.deductUserWallet(-1.0*money, URLEncoder.encode(message),purchaseId,walletSecretKey,"6",userId);
         try{
-            Response<String> response = call.execute();
+            Response<com.astrotalk.live.model.pojo.Response> response = call.execute();
             log.info("Response : {}", response);
-            String s = response.body();
-            log.info("String : {}",s);
-            JSONObject jsonObject = new JSONObject(s);
-            if(!jsonObject.get("status").equals("success"))
-                throw new LiveException(jsonObject.getString("reason"));
+            com.astrotalk.live.model.pojo.Response s = response.body();
+            log.info("parsed response : {}",s);
+            if(!s.getStatus().equals("success"))
+                throw new LiveException(s.getReason());
         }catch (Exception exception){
             exception.printStackTrace();
             throw new LiveException(exception.getMessage());
