@@ -3,9 +3,11 @@ package com.astrotalk.live.repository;
 import com.astrotalk.live.model.LiveEventActivity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface LiveEventActivityRepository extends CrudRepository<LiveEventActivity,Long> {
 
     @Query(value = "Select * from live_event_activity where id > ?2 and event_id = ?1 order by id desc", nativeQuery = true)
