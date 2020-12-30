@@ -9,7 +9,7 @@ import retrofit2.http.Query;
 public interface WalletServiceClient {
 
     @POST("/AstroTalk/wallet/deduction")
-    public Call<JSONObject> deductUserWallet(@Query("amount") double amount, @Query("comment") String comment, @Query("orderId") long eventId,
+    public Call<String> deductUserWallet(@Query("amount") double amount, @Query("comment") String comment, @Query("orderId") long eventId,
                                              @Query("secretKey") String key, @Query("serviceId") String serviceId, @Query("userId") long userId);
 
 

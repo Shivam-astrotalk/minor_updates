@@ -238,12 +238,14 @@ public class LiveService {
 
     public void checkAndDeductMoney(long userId, double money, String message, long eventId, long purchaseId) throws LiveException {
         //throw new LiveException("Not enough money, please recharge");
-        Call<JSONObject> call = walletServiceClient.deductUserWallet(-1.0*money, URLEncoder.encode(message),purchaseId,walletSecretKey,"6",userId);
+        Call<String> call = walletServiceClient.deductUserWallet(-1.0*money, URLEncoder.encode(message),purchaseId,walletSecretKey,"6",userId);
         try{
-            Response<JSONObject> response = call.execute();
+            Response<String> response = call.execute();
             log.info("Response : {}", response);
-            JSONObject jsonObject = response.body();
-            log.info("Json : {}",jsonObject);
+            String s = response.body();
+            JSONObject jsonObject = new JSONObject(s);
+            log.info("String : {}",s);
+
             if(!jsonObject.get("status").equals("success"))
                 throw new LiveException(jsonObject.getString("reason"));
         }catch (Exception exception){
