@@ -47,7 +47,7 @@ public class LiveService {
     @Autowired
     WalletServiceClient walletServiceClient;
 
-    @Value("${WALLET_SERVICE_SECRET_KEY")
+    @Value("${WALLET_SERVICE_SECRET_KEY}")
     String walletSecretKey;
 
     public void create(LiveEvent liveEvent){
