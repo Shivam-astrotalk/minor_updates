@@ -235,7 +235,7 @@ public class LiveService {
 
     public void checkAndDeductMoney(long userId, double money, String message, long eventId, long purchaseId) throws LiveException {
         //throw new LiveException("Not enough money, please recharge");
-        Call<JSONObject> call = walletServiceClient.deductUserWallet(-1.0*money, URLEncoder.encode(message),eventId,walletSecretKey,"6",userId);
+        Call<JSONObject> call = walletServiceClient.deductUserWallet(-1.0*money, URLEncoder.encode(message),purchaseId,walletSecretKey,"6",userId);
         try{
             Response<JSONObject> response = call.execute();
             log.info("Response : {}", response);
