@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -113,6 +114,8 @@ public class LiveService {
         }
         return false;
     }
+
+    @Transactional
     public String joinEvent(long userId, long eventId, String userName, String userPic) throws LiveException {
         if (isBlocked(userId, eventId))
             throw new LiveException("User is blocked for this event");
@@ -257,6 +260,7 @@ public class LiveService {
        return productRepository.getAllActiveProducts();
     }
 
+    @Transactional
     public void buyProduct(long userId, long eventId, long productId, String userName, String userPic) throws LiveException {
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         LiveEventProduct liveEventProduct = productRepository.findById(productId).get();
