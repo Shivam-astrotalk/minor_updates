@@ -1,6 +1,7 @@
 package com.astrotalk.live.network;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +16,14 @@ public class NetworkConfig {
 
     @Bean
     public WalletServiceClient getWalletClient(){
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(walletServiceIP)
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
+                .client(client)
                 .build();
         return retrofit.create(WalletServiceClient.class);
     }
