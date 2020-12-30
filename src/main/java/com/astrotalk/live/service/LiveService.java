@@ -237,6 +237,7 @@ public class LiveService {
         Call<JSONObject> call = walletServiceClient.deductUserWallet(money,message,eventId,walletSecretKey,"6",userId);
         try{
             Response<JSONObject> response = call.execute();
+            log.info("Response : {}", response);
             JSONObject jsonObject = response.body();
             if(!jsonObject.get("status").equals("success"))
                 throw new LiveException(jsonObject.getString("reason"));
