@@ -3,11 +3,16 @@ package com.astrotalk.live.service;
 import com.astrotalk.live.Timings;
 import com.astrotalk.live.agora.RtcTokenBuilder;
 import com.astrotalk.live.model.*;
+import com.astrotalk.live.network.WalletServiceClient;
 import com.astrotalk.live.repository.*;
 
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import retrofit2.Call;
+import retrofit2.Response;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -39,6 +44,11 @@ public class LiveService {
     @Autowired
     RtcTokenBuilder tokenBuilder;
 
+    @Autowired
+    WalletServiceClient walletServiceClient;
+
+    @Value("${WALLET_SERVICE_SECRET_KEY")
+    String walletSecretKey;
 
     public void create(LiveEvent liveEvent){
         liveEvent.setStatus(Status.CREATED);
@@ -115,7 +125,7 @@ public class LiveService {
             }
         }
         if (!alreadySubscribered ) {
-            checkAndDeductMoney(userId, liveEvent.getEntryFee(), "Joining event : " + liveEvent.getTitle());
+            checkAndDeductMoney(userId, liveEvent.getEntryFee(), "Joining event : " + liveEvent.getTitle(),liveEvent.getId());
             LiveEventSubscriber liveEventSubscriber = new LiveEventSubscriber();
             liveEventSubscriber.setJoinTime(System.currentTimeMillis());
             liveEventSubscriber.setLiveEventId(eventId);
@@ -222,8 +232,18 @@ public class LiveService {
     }
 
 
-    public void checkAndDeductMoney(long userId, double money, String message) throws LiveException {
+    public void checkAndDeductMoney(long userId, double money, String message, long eventId) throws LiveException {
         //throw new LiveException("Not enough money, please recharge");
+        Call<JSONObject> call = walletServiceClient.deductUserWallet(money,message,eventId,walletSecretKey,"6",userId);
+        try{
+            Response<JSONObject> response = call.execute();
+            JSONObject jsonObject = response.body();
+            if(!jsonObject.get("status").equals("success"))
+                throw new LiveException(jsonObject.getString("reason"));
+        }catch (Exception exception){
+            exception.printStackTrace();
+            throw new LiveException(exception.getMessage());
+        }
     }
 
 
@@ -238,7 +258,7 @@ public class LiveService {
     public void buyProduct(long userId, long eventId, long productId, String userName, String userPic) throws LiveException {
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         LiveEventProduct liveEventProduct = productRepository.findById(productId).get();
-        checkAndDeductMoney(userId,liveEventProduct.getPrice(),"Purchased " + liveEventProduct.getProductName() + " in eventId " + eventId);
+        checkAndDeductMoney(userId,liveEventProduct.getPrice(),"Purchased " + liveEventProduct.getProductName() + " in eventId " + eventId, eventId);
         LiveEventPurchase purchase = new LiveEventPurchase();
         purchase.setAmount(liveEventProduct.getPrice());
         purchase.setUserId(userId);
