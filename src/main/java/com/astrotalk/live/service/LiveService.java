@@ -251,8 +251,6 @@ public class LiveService {
             exception.printStackTrace();
             throw new LiveException(exception.getMessage());
         }
-
-        throw new LiveException("testing");
     }
 
 
