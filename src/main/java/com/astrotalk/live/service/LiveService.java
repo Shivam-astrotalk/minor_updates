@@ -15,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -234,7 +235,7 @@ public class LiveService {
 
     public void checkAndDeductMoney(long userId, double money, String message, long eventId) throws LiveException {
         //throw new LiveException("Not enough money, please recharge");
-        Call<JSONObject> call = walletServiceClient.deductUserWallet(money,message,eventId,walletSecretKey,"6",userId);
+        Call<JSONObject> call = walletServiceClient.deductUserWallet(money, URLEncoder.encode(message),eventId,walletSecretKey,"6",userId);
         try{
             Response<JSONObject> response = call.execute();
             log.info("Response : {}", response);
