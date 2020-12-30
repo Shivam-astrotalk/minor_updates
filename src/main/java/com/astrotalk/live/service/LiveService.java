@@ -126,7 +126,6 @@ public class LiveService {
             }
         }
         if (!alreadySubscribered ) {
-            checkAndDeductMoney(userId, liveEvent.getEntryFee(), "Joining event : " + liveEvent.getTitle(),liveEvent.getId());
             LiveEventSubscriber liveEventSubscriber = new LiveEventSubscriber();
             liveEventSubscriber.setJoinTime(System.currentTimeMillis());
             liveEventSubscriber.setLiveEventId(eventId);
@@ -134,6 +133,14 @@ public class LiveService {
             liveEventSubscriber.setUserName(userName);
             liveEventSubscriber.setUserPic(userPic);
             liveEventSubscriberRepository.save(liveEventSubscriber);
+            LiveEventPurchase purchase = new LiveEventPurchase();
+            purchase.setAmount(liveEvent.getEntryFee());
+            purchase.setUserId(userId);
+            purchase.setProductId(-1);
+            purchase.setCreationTime(Timings.currentTimeIndia());
+            purchase.setEventId(eventId);
+            purchaseRepository.save(purchase);
+            checkAndDeductMoney(userId, liveEvent.getEntryFee(), "Joining event : " + liveEvent.getTitle(),liveEvent.getId(), purchase.getId());
         }
         if(liveEvent.getStatus().equals(Status.ONGOING)){
             LiveEventActivity liveEventActivity = new LiveEventActivity();
@@ -142,13 +149,6 @@ public class LiveService {
             liveEventActivity.setUserName(userName);
             liveEventActivity.setUserPic(userPic);
             liveEventActivityRepository.save(liveEventActivity);
-            LiveEventPurchase purchase = new LiveEventPurchase();
-            purchase.setAmount(liveEvent.getEntryFee());
-            purchase.setUserId(userId);
-            purchase.setProductId(-1);
-            purchase.setCreationTime(Timings.currentTimeIndia());
-            purchase.setEventId(eventId);
-            purchaseRepository.save(purchase);
             return tokenBuilder.buildTokenWithUserAccount(String.valueOf(eventId), RtcTokenBuilder.Role.Role_Subscriber,0);
         }
         return null;
@@ -233,9 +233,9 @@ public class LiveService {
     }
 
 
-    public void checkAndDeductMoney(long userId, double money, String message, long eventId) throws LiveException {
+    public void checkAndDeductMoney(long userId, double money, String message, long eventId, long purchaseId) throws LiveException {
         //throw new LiveException("Not enough money, please recharge");
-        Call<JSONObject> call = walletServiceClient.deductUserWallet(money, URLEncoder.encode(message),eventId,walletSecretKey,"6",userId);
+        Call<JSONObject> call = walletServiceClient.deductUserWallet(-1.0*money, URLEncoder.encode(message),eventId,walletSecretKey,"6",userId);
         try{
             Response<JSONObject> response = call.execute();
             log.info("Response : {}", response);
@@ -260,7 +260,7 @@ public class LiveService {
     public void buyProduct(long userId, long eventId, long productId, String userName, String userPic) throws LiveException {
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         LiveEventProduct liveEventProduct = productRepository.findById(productId).get();
-        checkAndDeductMoney(userId,liveEventProduct.getPrice(),"Purchased " + liveEventProduct.getProductName() + " in eventId " + eventId, eventId);
+
         LiveEventPurchase purchase = new LiveEventPurchase();
         purchase.setAmount(liveEventProduct.getPrice());
         purchase.setUserId(userId);
@@ -274,6 +274,7 @@ public class LiveService {
         activity.setEventId(eventId);
         liveEventActivityRepository.save(activity);
         purchaseRepository.save(purchase);
+        checkAndDeductMoney(userId,liveEventProduct.getPrice(),"Purchased " + liveEventProduct.getProductName() + " in eventId " + eventId, eventId, purchase.getId());
     }
 
     public List<LiveEvent> getUserHistory(long userId){
