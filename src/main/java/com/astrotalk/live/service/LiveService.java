@@ -264,7 +264,7 @@ public class LiveService {
        return productRepository.getAllActiveProducts();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = LiveException.class)
     public void buyProduct(long userId, long eventId, long productId, String userName, String userPic){
         LiveEvent liveEvent = liveEventRepository.findById(eventId).get();
         LiveEventProduct liveEventProduct = productRepository.findById(productId).get();
