@@ -130,6 +130,7 @@ public class LiveService {
             }
         }
         if (!alreadySubscribered ) {
+            log.info("Subscribing to eventId {}", eventId);
             LiveEventSubscriber liveEventSubscriber = new LiveEventSubscriber();
             liveEventSubscriber.setJoinTime(System.currentTimeMillis());
             liveEventSubscriber.setLiveEventId(eventId);
@@ -144,6 +145,7 @@ public class LiveService {
             purchase.setCreationTime(Timings.currentTimeIndia());
             purchase.setEventId(eventId);
             purchaseRepository.save(purchase);
+            log.info("Booking purchase {}", purchase);
             checkAndDeductMoney(userId, liveEvent.getEntryFee(), "Joining event : " + liveEvent.getTitle(),liveEvent.getId(), purchase.getId());
         }
         if(liveEvent.getStatus().equals(Status.ONGOING)){
